@@ -1,7 +1,11 @@
+import Header from "../components/Header";
+import SpecialityMenu from "../components/SpecialityMenu";
+
 const Home = () => {
   return (
     <div>
-      <h1>Home</h1>
+      <Header />
+      <SpecialityMenu />
     </div>
   );
 };
