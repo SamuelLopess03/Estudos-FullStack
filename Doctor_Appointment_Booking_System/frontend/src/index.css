@@ -7,3 +7,16 @@
 ::-webkit-scrollbar {
   @apply hidden;
 }
+
+@theme {
+  --color-primary: #5f6fff;
+  --grid-auto: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.grid-cols-auto {
+  grid-template-columns: var(--grid-auto);
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
