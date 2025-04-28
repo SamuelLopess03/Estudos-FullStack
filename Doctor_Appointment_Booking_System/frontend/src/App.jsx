@@ -8,7 +8,9 @@ import Contact from "./pages/Contact";
 import MyProfile from "./pages/MyProfile";
 import MyAppointments from "./pages/MyAppointments";
 import Appointment from "./pages/Appointment";
+
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 import "./App.css";
 
@@ -28,6 +30,7 @@ function App() {
         <Route path="/appointments/:docId" element={<Appointment />} />
         <Route path="*" element={<h1>404 Not Found</h1>} />
       </Routes>
+      <Footer />
     </div>
   );
 }
