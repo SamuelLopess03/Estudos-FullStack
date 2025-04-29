@@ -27,7 +27,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/my-appointments" element={<MyAppointments />} />
-        <Route path="/appointments/:docId" element={<Appointment />} />
+        <Route path="/appointment/:docId" element={<Appointment />} />
         <Route path="*" element={<h1>404 Not Found</h1>} />
       </Routes>
       <Footer />
