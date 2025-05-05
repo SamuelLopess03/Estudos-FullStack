@@ -4,11 +4,12 @@
   "description": "",
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "server": "nodemon server.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
