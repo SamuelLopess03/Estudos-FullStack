@@ -1,10 +1,21 @@
+import { useContext } from "react";
+import { ToastContainer } from "react-toastify";
+
 import Login from "../src/pages/Login";
+import { AdminContext } from "./context/AdminContext";
 
 function App() {
-  return (
+  const { aToken } = useContext(AdminContext);
+
+  return aToken ? (
     <div>
-      <Login />
+      <ToastContainer />
     </div>
+  ) : (
+    <>
+      <Login />
+      <ToastContainer />
+    </>
   );
 }
 
