@@ -28,7 +28,16 @@ function App() {
           <Route path="/all-appointments" element={<AllAppointments />} />
           <Route path="/add-doctors" element={<AddDoctors />} />
           <Route path="/doctor-list" element={<DoctorsList />} />
-          <Route path="*" element={<h1>404 Not Found</h1>} />
+          <Route
+            path="*"
+            element={
+              <div className="w-full flex justify-center items-center min-h-screen">
+                <h1 className="font-semibold text-2xl">
+                  Página Não Encontrada
+                </h1>
+              </div>
+            }
+          />
         </Routes>
       </div>
     </div>
