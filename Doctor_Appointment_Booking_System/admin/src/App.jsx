@@ -3,6 +3,7 @@ import { ToastContainer } from "react-toastify";
 
 import Login from "../src/pages/Login";
 import { AdminContext } from "./context/AdminContext";
+import Navbar from "./components/Navbar";
 
 function App() {
   const { aToken } = useContext(AdminContext);
@@ -10,6 +11,7 @@ function App() {
   return aToken ? (
     <div>
       <ToastContainer />
+      <Navbar />
     </div>
   ) : (
     <>
