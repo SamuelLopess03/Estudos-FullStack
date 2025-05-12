@@ -3,3 +3,7 @@
 @theme {
   --color-primary: #5f6fff;
 }
+
+::-webkit-scrollbar {
+  @apply hidden;
+}
