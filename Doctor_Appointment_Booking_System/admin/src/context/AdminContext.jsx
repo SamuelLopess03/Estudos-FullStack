@@ -25,7 +25,7 @@ const AdminContextProvider = (props) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error(error.response.data.message);
+      toast.error(error.message);
     }
   };
 
@@ -49,7 +49,7 @@ const AdminContextProvider = (props) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error(error.response.data.message);
+      toast.error(error.message);
     }
   };
 

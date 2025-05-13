@@ -1,9 +1,11 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
+
 import connectDB from "./config/mongodb.js";
 import connectCloudinary from "./config/cloudinary.js";
 import adminRouter from "./routes/adminRoute.js";
+import doctorRouter from "./routes/doctorRoute.js";
 
 // App Config
 const app = express();
@@ -17,6 +19,7 @@ app.use(cors());
 
 // API Endpoints
 app.use("/api/admin", adminRouter);
+app.use("/api/doctor", doctorRouter);
 
 app.get("/", (req, res) => {
   res.send("API WORKING");
