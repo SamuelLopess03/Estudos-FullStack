@@ -98,14 +98,14 @@ const loginUser = async (req, res) => {
 
 const getProfile = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.userId;
 
-    const user = await userModel.findById(userId).select("-password");
+    const userData = await userModel.findById(userId).select("-password");
 
     return res.status(200).json({
       success: true,
       message: "User Profile Fetched Successfully",
-      user,
+      userData,
     });
   } catch (error) {
     console.error(error);
@@ -118,7 +118,8 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    const { userId, name, phone, address, dob, gender } = req.body;
+    const { name, phone, address, dob, gender } = req.body;
+    const userId = req.userId;
     const imageFile = req.file;
 
     if (!name || !phone || !dob || !gender) {
