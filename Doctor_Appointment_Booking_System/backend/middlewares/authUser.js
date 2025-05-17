@@ -14,7 +14,12 @@ const authUser = async (req, res, next) => {
 
     const token_decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-    req.userId = token_decoded.id;
+    if (req.method === "GET") {
+      req.body = {};
+      req.body.userId = token_decoded.id;
+    } else {
+      req.body.userId = token_decoded.id;
+    }
 
     next();
   } catch (error) {

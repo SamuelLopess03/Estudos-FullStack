@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 
 import userModel from "../models/userModel.js";
+import doctorModel from "../models/doctorModel.js";
 
 const registerUser = async (req, res) => {
   try {
@@ -98,7 +99,7 @@ const loginUser = async (req, res) => {
 
 const getProfile = async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = req.body.userId;
 
     const userData = await userModel.findById(userId).select("-password");
 
@@ -160,4 +161,68 @@ const updateProfile = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, getProfile, updateProfile };
+const bookAppointment = async (req, res) => {
+  try {
+    const { userId, doctorId, slotDate, slotTime } = req.body;
+
+    const doctorData = await doctorModel.findById(doctorId).select("-password");
+
+    if (!doctorData.available) {
+      return res.status(400).json({
+        success: false,
+        message: "Doctor is not available",
+      });
+    }
+
+    let slots_booked = doctorData.slots_booked;
+
+    if (slots_booked[slotDate]) {
+      if (slots_booked[slotDate].includes(slotTime)) {
+        return res.status(400).json({
+          success: false,
+          message: "Slot not Available",
+        });
+      } else {
+        slots_booked[slotDate].push(slotTime);
+      }
+    } else {
+      slots_booked[slotDate] = [];
+      slots_booked[slotDate].push(slotTime);
+    }
+
+    const userData = await userModel.findById(userId).select("-password");
+
+    delete doctorData.slots_booked;
+
+    const appoinmentData = {
+      userId,
+      doctorId,
+      slotDate,
+      slotTime,
+      userData,
+      docData: doctorData,
+      amount: doctorData.fees,
+      date: Date.now(),
+    };
+
+    const newAppointment = new appoinmentModel(appoinmentData);
+    await newAppointment.save();
+
+    await doctorModel.findByIdAndUpdate(doctorId, {
+      slots_booked,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Appointment Booked Successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export { registerUser, loginUser, getProfile, updateProfile, bookAppointment };
