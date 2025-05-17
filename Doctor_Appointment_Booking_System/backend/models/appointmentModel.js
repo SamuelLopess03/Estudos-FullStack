@@ -3,8 +3,8 @@ import moogoose from "mongoose";
 const appointmentSchema = new moogoose.Schema({
   userId: { type: String, required: true },
   doctorId: { type: String, required: true },
-  SlotDate: { type: String, required: true },
-  SlotTime: { type: String, required: true },
+  slotDate: { type: String, required: true },
+  slotTime: { type: String, required: true },
   userData: { type: Object, required: true },
   docData: { type: Object, required: true },
   amount: { type: Number, required: true },

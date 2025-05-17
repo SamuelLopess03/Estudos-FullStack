@@ -5,6 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 import userModel from "../models/userModel.js";
 import doctorModel from "../models/doctorModel.js";
+import appointmentModel from "../models/appointmentModel.js";
 
 const registerUser = async (req, res) => {
   try {
@@ -205,7 +206,7 @@ const bookAppointment = async (req, res) => {
       date: Date.now(),
     };
 
-    const newAppointment = new appoinmentModel(appoinmentData);
+    const newAppointment = new appointmentModel(appoinmentData);
     await newAppointment.save();
 
     await doctorModel.findByIdAndUpdate(doctorId, {
