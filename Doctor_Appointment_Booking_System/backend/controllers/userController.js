@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 
+import razorpayInstance from "../config/razorpay.js";
+
 import userModel from "../models/userModel.js";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
@@ -288,6 +290,45 @@ const cancelAppointment = async (req, res) => {
   }
 };
 
+const paymentRazorpay = async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+
+    const appointmentData = await appointmentModel.findById(appointmentId);
+
+    if (!appointmentData || appointmentData.cancelled) {
+      return res.status(400).json({
+        success: false,
+        message: "Appointment Cancelled or Not Found",
+      });
+    }
+
+    const options = {
+      amount: appointmentData.amount * 100,
+      currency: process.env.RAZORPAY_CURRENCY,
+      receipt: appointmentId,
+    };
+
+    console.log(options);
+
+    const order = await razorpayInstance.orders.create(options);
+
+    console.log(order);
+
+    res.status(201).json({
+      success: true,
+      message: "Payment Initiated Successfully",
+      order,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export {
   registerUser,
   loginUser,
@@ -296,4 +337,5 @@ export {
   bookAppointment,
   listAppointments,
   cancelAppointment,
+  paymentRazorpay,
 };
