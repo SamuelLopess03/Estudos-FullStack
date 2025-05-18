@@ -100,7 +100,7 @@ const loginUser = async (req, res) => {
 
 const getProfile = async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const { userId } = req.body;
 
     const userData = await userModel.findById(userId).select("-password");
 
@@ -226,4 +226,31 @@ const bookAppointment = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, getProfile, updateProfile, bookAppointment };
+const listAppointments = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const appointments = await appointmentModel.find({ userId });
+
+    res.status(200).json({
+      success: true,
+      message: "Appointments Fetched Successfully",
+      appointments,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export {
+  registerUser,
+  loginUser,
+  getProfile,
+  updateProfile,
+  bookAppointment,
+  listAppointments,
+};

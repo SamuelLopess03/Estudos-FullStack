@@ -6,6 +6,7 @@ import {
   getProfile,
   updateProfile,
   bookAppointment,
+  listAppointments,
 } from "../controllers/userController.js";
 import upload from "../middlewares/multer.js";
 import authUser from "../middlewares/authUser.js";
@@ -24,5 +25,6 @@ userRouter.put(
 );
 
 userRouter.post("/book-appointment", authUser, bookAppointment);
+userRouter.get("/appointments", authUser, listAppointments);
 
 export default userRouter;
