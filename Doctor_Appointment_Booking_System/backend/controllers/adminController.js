@@ -161,4 +161,45 @@ const appointmentsAdmin = async (req, res) => {
   }
 };
 
-export { loginAdmin, addDoctor, allDoctors, appointmentsAdmin };
+const AppointmentCancel = async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+
+    const appointment = await appointmentModel.findById(appointmentId);
+
+    await appointmentModel.findByIdAndUpdate(appointmentId, {
+      cancelled: true,
+    });
+
+    const { doctorId, slotDate, slotTime } = appointment;
+
+    const doctorData = await doctorModel.findById(doctorId);
+
+    let slots_booked = doctorData.slots_booked;
+
+    slots_booked[slotDate] = slots_booked[slotDate].filter(
+      (item) => item !== slotTime
+    );
+
+    await doctorModel.findByIdAndUpdate(doctorId, { slots_booked });
+
+    res.status(200).json({
+      success: true,
+      message: "Appointment Cancelled Successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export {
+  loginAdmin,
+  addDoctor,
+  allDoctors,
+  appointmentsAdmin,
+  AppointmentCancel,
+};

@@ -5,6 +5,7 @@ import {
   allDoctors,
   loginAdmin,
   appointmentsAdmin,
+  AppointmentCancel,
 } from "../controllers/adminController.js";
 import { changeAvailability } from "../controllers/doctorController.js";
 
@@ -19,5 +20,6 @@ adminRouter.get("/all-doctors", authAdmin, allDoctors);
 
 adminRouter.put("/change-availability", authAdmin, changeAvailability);
 adminRouter.get("/appointments", authAdmin, appointmentsAdmin);
+adminRouter.put("/cancel-appointment", authAdmin, AppointmentCancel);
 
 export default adminRouter;
