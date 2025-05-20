@@ -38,8 +38,6 @@ const Login = () => {
           localStorage.setItem("dToken", data.token);
 
           setDToken(data.token);
-
-          console.log(data.token);
         }
       }
     } catch (error) {

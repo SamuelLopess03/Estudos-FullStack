@@ -1,5 +1,5 @@
-const doctorProfile = () => {
+const DoctorProfile = () => {
   return <div>doctorProfile</div>;
 };
 
-export default doctorProfile;
+export default DoctorProfile;

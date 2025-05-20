@@ -1,5 +1,5 @@
-const doctorDashboard = () => {
+const DoctorDashboard = () => {
   return <div>doctorDashboard</div>;
 };
 
-export default doctorDashboard;
+export default DoctorDashboard;
