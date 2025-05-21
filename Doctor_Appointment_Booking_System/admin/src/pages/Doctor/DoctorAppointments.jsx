@@ -6,7 +6,13 @@ import { AppContext } from "../../context/AppContext";
 import { assets } from "../../assets/assets";
 
 const DoctorAppointments = () => {
-  const { dToken, appointments, getAppointments } = useContext(DoctorContext);
+  const {
+    dToken,
+    appointments,
+    getAppointments,
+    completeAppointment,
+    cancelAppointment,
+  } = useContext(DoctorContext);
   const { currency, calculateAge, slotDateFormat } = useContext(AppContext);
 
   useEffect(() => {
@@ -30,7 +36,7 @@ const DoctorAppointments = () => {
           <p>Action</p>
         </div>
 
-        {appointments.map((item, index) => (
+        {appointments.reverse().map((item, index) => (
           <div
             className="flex flex-wrap justify-between max-sm:gap-5 max-sm:text-base sm:grid grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] gap-1 items-center text-gray-500 py-3 px-6 border-b border-gray-200 hover:bg-gray-50"
             key={index}
@@ -57,18 +63,26 @@ const DoctorAppointments = () => {
               {currency}
               {item.amount}
             </p>
-            <div className="flex">
-              <img
-                className="w-10 cursor-pointer"
-                src={assets.cancel_icon}
-                alt=""
-              />
-              <img
-                className="w-10 cursor-pointer"
-                src={assets.tick_icon}
-                alt=""
-              />
-            </div>
+            {item.cancelled ? (
+              <p className="text-red-400 text-xs font-medium">Cancelled</p>
+            ) : item.isCompleted ? (
+              <p className="text-green-500 text-xs font-medium">Completed</p>
+            ) : (
+              <div className="flex">
+                <img
+                  onClick={() => cancelAppointment(item._id)}
+                  className="w-10 cursor-pointer"
+                  src={assets.cancel_icon}
+                  alt=""
+                />
+                <img
+                  onClick={() => completeAppointment(item._id)}
+                  className="w-10 cursor-pointer"
+                  src={assets.tick_icon}
+                  alt=""
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>
