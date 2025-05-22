@@ -206,6 +206,49 @@ const doctorDashboard = async (req, res) => {
   }
 };
 
+const doctorProfile = async (req, res) => {
+  try {
+    const { docId } = req.body;
+
+    const profileData = await doctorModel.findById(docId).select("-password");
+
+    res.status(200).json({
+      success: true,
+      message: "Profile Data fetched successfully",
+      profileData,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const updateDoctorProfile = async (req, res) => {
+  try {
+    const { docId, fees, address, available } = req.body;
+
+    await doctorModel.findByIdAndUpdate(docId, {
+      fees,
+      address,
+      available,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Profile Updated Successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export {
   changeAvailability,
   doctorList,
@@ -214,4 +257,6 @@ export {
   appointmentComplete,
   appointmentCancel,
   doctorDashboard,
+  doctorProfile,
+  updateDoctorProfile,
 };
