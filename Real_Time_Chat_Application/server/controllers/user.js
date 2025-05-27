@@ -1,7 +1,5 @@
-import bcrypt from "bcrypt";
-
-import User from "../models/User.js";
 import { generateToken, hashPassword, comparePassword } from "../lib/utils.js";
+import User from "../models/user.js";
 
 export const signUp = async (req, res) => {
   const { fullName, email, password, bio } = req.body;

@@ -1,11 +1,20 @@
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
+/* ------ Functions Authentication ------ */
 export const generateToken = (userId) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET_KEY);
 
   return token;
 };
 
+export const verifyToken = (token) => {
+  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+  return decoded;
+};
+
+/* ------ Functions Password ------ */
 export const hashPassword = async (password) => {
   try {
     const salt = await bcrypt.genSalt(10);
