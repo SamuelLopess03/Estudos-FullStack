@@ -1,4 +1,9 @@
-import { generateToken, hashPassword, comparePassword } from "../lib/utils.js";
+import {
+  generateToken,
+  hashPassword,
+  comparePassword,
+  uploadImg,
+} from "../lib/utils.js";
 import User from "../models/user.js";
 
 export const signUp = async (req, res) => {
@@ -88,4 +93,45 @@ export const checkAuth = (req, res) => {
     success: true,
     user: req.user,
   });
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { profilePic, bio, fullName } = req.body;
+
+    const userId = req.user._id;
+    let updatedUser;
+
+    if (!profilePic) {
+      updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { bio, fullName },
+        { new: true }
+      );
+    } else {
+      const urlUpload = await uploadImg(profilePic);
+
+      updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          profilePic: urlUpload,
+          bio,
+          fullName,
+        },
+        { new: true }
+      );
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };

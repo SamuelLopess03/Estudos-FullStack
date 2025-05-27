@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
+import cloudinary from "../lib/cloudinary.js";
+
 /* ------ Functions Authentication ------ */
 export const generateToken = (userId) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET_KEY);
@@ -32,6 +34,18 @@ export const comparePassword = async (password, hashedPassword) => {
     const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
 
     return isPasswordCorrect;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const uploadImg = async (image) => {
+  try {
+    const upload = await cloudinary.uploader.upload(image);
+
+    const urlSecureUpload = upload.secure_url;
+
+    return urlSecureUpload;
   } catch (error) {
     console.error(error);
   }
