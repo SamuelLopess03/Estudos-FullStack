@@ -27,11 +27,3 @@ export const protectRoute = async (req, res) => {
     });
   }
 };
-
-// Controller to check if user is authenticated
-export const checkAuth = (req, res) => {
-  res.status(200).json({
-    success: true,
-    user: req.user,
-  });
-};
