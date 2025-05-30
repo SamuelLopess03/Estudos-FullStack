@@ -1,7 +1,7 @@
 import User from "../models/user.js";
 import { verifyToken } from "../lib/utils.js";
 
-export const protectRoute = async (req, res) => {
+export const protectRoute = async (req, res, next) => {
   try {
     const token = req.headers.token;
 
