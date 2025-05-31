@@ -18,10 +18,7 @@ const HomePage = () => {
           }`}
       >
         <Sidebar />
-        <ChatContainer
-          setSelectedUser={setSelectedUser}
-          selectedUser={selectedUser}
-        />
+        <ChatContainer />
         <RightSidebar
           setSelectedUser={setSelectedUser}
           selectedUser={selectedUser}
