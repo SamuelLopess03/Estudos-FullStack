@@ -5,6 +5,13 @@ export const protectRoute = async (req, res, next) => {
   try {
     const token = req.headers.token;
 
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
     const decoded = verifyToken(token);
 
     const user = await User.findById(decoded.userId).select("-password");

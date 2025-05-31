@@ -17,10 +17,7 @@ const HomePage = () => {
               : "md:grid-cols-2"
           }`}
       >
-        <Sidebar
-          setSelectedUser={setSelectedUser}
-          selectedUser={selectedUser}
-        />
+        <Sidebar />
         <ChatContainer
           setSelectedUser={setSelectedUser}
           selectedUser={selectedUser}
