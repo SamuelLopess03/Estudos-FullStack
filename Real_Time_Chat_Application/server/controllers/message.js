@@ -4,6 +4,8 @@ import { io, userSocketMap } from "../server.js";
 import User from "../models/user.js";
 import Message from "../models/message.js";
 
+import { uploadImg } from "../lib/utils.js";
+
 export const getUsersForSidebar = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -103,8 +105,7 @@ export const sendMessage = async (req, res) => {
     let imageUrl;
 
     if (image) {
-      const uploadResponse = await cloudinary.uploader.upload(image);
-      imageUrl = uploadResponse.secure_url;
+      imageUrl = await uploadImg(image);
     }
 
     const newMessage = await Message.create({
