@@ -6,6 +6,8 @@ import { clerkMiddleware } from "@clerk/express";
 
 import connectDB from "./configs/db.js";
 
+import clerkWebhooks from "./controllers/clerkWebhooks.js";
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -18,6 +20,8 @@ connectDB();
 app.get("/", (req, res) => {
   res.send("API is working");
 });
+
+app.use("/api/clerk", clerkWebhooks);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
