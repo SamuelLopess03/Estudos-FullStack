@@ -2,7 +2,9 @@ package com.samuel.authify.services;
 
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.samuel.authify.entities.UserEntity;
 import com.samuel.authify.io.ProfileRequest;
@@ -21,9 +23,13 @@ public class ProfileServiceImpl implements ProfileService {
 	public ProfileResponse createProfile(ProfileRequest request) {
 		UserEntity newProfile = convertToUserEntity(request);
 		
-		newProfile = userRepository.save(newProfile);
+		if(!userRepository.existsByEmail(request.getEmail())) {
+			newProfile = userRepository.save(newProfile);
+			
+			return convertToProfileResponse(newProfile);
+		}
 		
-		return convertToProfileResponse(newProfile);
+		throw new ResponseStatusException(HttpStatus.CONFLICT, "Email Already Exists.");
 	}
 
 	private UserEntity convertToUserEntity(ProfileRequest request) {
