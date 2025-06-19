@@ -11,6 +11,7 @@ import com.samuel.authify.io.ProfileRequest;
 import com.samuel.authify.io.ProfileResponse;
 import com.samuel.authify.services.ProfileService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -22,7 +23,7 @@ public class ProfileController {
 	
 	@PostMapping("/register")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ProfileResponse register(@RequestBody ProfileRequest request) {
+	public ProfileResponse register(@Valid @RequestBody ProfileRequest request) {
 		ProfileResponse response = profileService.createProfile(request);
 		
 		// TODO: Send Welcome Email
