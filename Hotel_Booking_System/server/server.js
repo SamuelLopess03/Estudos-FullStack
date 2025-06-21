@@ -8,6 +8,7 @@ import connectDB from "./configs/db.js";
 
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
 import userRouter from "./routes/user.js";
+import hotelRouter from "./routes/hotel.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,6 +25,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/clerk", clerkWebhooks);
 app.use("/api/user", userRouter);
+app.use("/api/hotels", hotelRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
