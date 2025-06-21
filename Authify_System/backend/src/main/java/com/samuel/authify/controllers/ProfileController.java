@@ -15,7 +15,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1.0")
 @RequiredArgsConstructor
 public class ProfileController {
 	
