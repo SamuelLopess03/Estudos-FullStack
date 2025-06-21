@@ -1,7 +1,7 @@
 import express from "express";
 
 import { protect } from "../middlewares/auth.js";
-import { getUserData, storeRecentSearchedCities } from "../controllers/user";
+import { getUserData, storeRecentSearchedCities } from "../controllers/user.js";
 
 const userRouter = express.Router();
 
