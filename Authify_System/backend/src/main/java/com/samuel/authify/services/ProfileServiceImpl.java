@@ -3,6 +3,7 @@ package com.samuel.authify.services;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 public class ProfileServiceImpl implements ProfileService {
 	
 	private final UserRepository userRepository;
+	
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public ProfileResponse createProfile(ProfileRequest request) {
@@ -38,7 +41,7 @@ public class ProfileServiceImpl implements ProfileService {
 				.email(request.getEmail())
 				.userId(UUID.randomUUID().toString())
 				.name(request.getName())
-				.password(request.getPassword())
+				.password(passwordEncoder.encode(request.getPassword()))
 				.isAccountVerified(false)
 				.resetOtpExpireAt(0L)
 				.verifyOtp(null)
