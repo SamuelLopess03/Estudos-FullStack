@@ -34,6 +34,8 @@ public class SecurityConfig {
 	
 	private final JwtRequestFilter jwtRequestFilter;
 	
+	private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.cors(Customizer.withDefaults())
@@ -43,7 +45,8 @@ public class SecurityConfig {
 					.permitAll().anyRequest().authenticated())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.logout(AbstractHttpConfigurer::disable)
-			.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+			.exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthenticationEntryPoint));
 		
 		return http.build();
 	}
