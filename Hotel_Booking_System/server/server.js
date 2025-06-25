@@ -11,6 +11,7 @@ import clerkWebhooks from "./controllers/clerkWebhooks.js";
 import userRouter from "./routes/user.js";
 import hotelRouter from "./routes/hotel.js";
 import roomRouter from "./routes/room.js";
+import bookingRouter from "./routes/booking.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ app.use("/api/clerk", clerkWebhooks);
 app.use("/api/user", userRouter);
 app.use("/api/hotels", hotelRouter);
 app.use("/api/rooms", roomRouter);
+app.use("/api/bookings", bookingRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
