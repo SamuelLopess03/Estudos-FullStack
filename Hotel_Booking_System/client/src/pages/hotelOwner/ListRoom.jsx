@@ -1,10 +1,62 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
-import { roomsDummyData } from "../../assets/assets";
 import Title from "../../components/Title";
+import { useAppContext } from "../../context/AppContext";
 
 const ListRoom = () => {
-  const [rooms, setRooms] = useState(roomsDummyData);
+  const [rooms, setRooms] = useState([]);
+
+  const { currency, axios, getToken, user } = useAppContext();
+
+  const fetchRooms = async () => {
+    try {
+      const { data } = await axios.get("/api/rooms/owner", {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
+
+      if (data.success) {
+        setRooms(data.rooms);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const toggleAvailability = async (roomId) => {
+    try {
+      const { data } = await axios.post(
+        "/api/rooms/toggle-availability",
+        {
+          roomId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        fetchRooms();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchRooms();
+    }
+  }, [user]);
 
   return (
     <div>
@@ -42,7 +94,7 @@ const ListRoom = () => {
                   {item.amenities.join(", ")}
                 </td>
                 <td className="py-3 px-4 text-gray-700 border-t border-gray-300">
-                  {item.pricePerNight}
+                  {currency} {item.pricePerNight}
                 </td>
                 <td className="py-3 px-4 text-red-500 border-t border-gray-300 text-center text-sm">
                   <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
@@ -50,6 +102,7 @@ const ListRoom = () => {
                       type="checkbox"
                       className="sr-only peer"
                       checked={item.isAvailable}
+                      onChange={() => toggleAvailability(item._id)}
                     />
 
                     <div
