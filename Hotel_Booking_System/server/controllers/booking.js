@@ -1,5 +1,6 @@
 import booking from "../models/booking.js";
 import hotel from "../models/hotel.js";
+import room from "../models/room.js";
 
 export const getUserBookings = async (req, res) => {
   try {
@@ -91,13 +92,13 @@ export const checkAvailabilityAPI = async (req, res) => {
 
 export const createBooking = async (req, res) => {
   try {
-    const { room, checkInDate, checkOutDate, guests } = req.body;
+    const { room: roomReq, checkInDate, checkOutDate, guests } = req.body;
     const user = req.user._id;
 
     const isAvailable = await checkAvailability({
       checkInDate,
       checkOutDate,
-      room,
+      roomReq,
     });
 
     if (!isAvailable) {
@@ -107,7 +108,7 @@ export const createBooking = async (req, res) => {
       });
     }
 
-    const roomData = await room.findById(room).populate("hotel");
+    const roomData = await room.findById(roomReq).populate("hotel");
     let totalPrice = roomData.pricePerNight;
 
     const checkIn = new Date(checkInDate);
@@ -119,7 +120,7 @@ export const createBooking = async (req, res) => {
 
     const bookingData = await booking.create({
       user,
-      room,
+      room: roomReq,
       hotel: roomData.hotel._id,
       guests: +guests,
       checkInDate,
