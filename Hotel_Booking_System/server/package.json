@@ -19,6 +19,7 @@
     "express": "^5.1.0",
     "mongoose": "^8.15.2",
     "multer": "^2.0.1",
+    "nodemailer": "^7.0.4",
     "svix": "^1.67.0"
   },
   "devDependencies": {
