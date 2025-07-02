@@ -16,7 +16,7 @@ import Footer from "./components/Footer";
 import HotelReg from "./components/HotelReg";
 import Loader from "./components/Loader";
 
-import { useAppContext } from "./context/appContext";
+import { useAppContext } from "./context/AppContext";
 
 function App() {
   const isOwnerPath = useLocation().pathname.includes("owner");

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import StarRating from "../components/StarRating";
 
 import { assets, facilityIcons } from "../assets/assets";
-import { useAppContext } from "../context/AppContext.jsx";
+import { useAppContext } from "../context/AppContext";
 
 const CheckBox = ({ label, selected = false, onChange = () => {} }) => {
   return (
