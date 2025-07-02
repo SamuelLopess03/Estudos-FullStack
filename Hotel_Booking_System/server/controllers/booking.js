@@ -1,3 +1,5 @@
+import stripe from "stripe";
+
 import transporter from "../configs/nodemailer.js";
 
 import booking from "../models/booking.js";
@@ -158,6 +160,54 @@ export const createBooking = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Booking Created Successfully",
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const stripePayment = async (req, res) => {
+  try {
+    const { bookingId } = req.body;
+    const { origin } = req.headers;
+
+    const bookingData = await booking.findById(bookingId);
+    const roomData = await room.findById(bookingData.room).populate("hotel");
+    const totalPrice = bookingData.totalPrice;
+
+    const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
+
+    const line_items = [
+      {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: roomData.hotel.name,
+          },
+          unit_amount: totalPrice * 100,
+        },
+        quantity: 1,
+      },
+    ];
+
+    const session = await stripeInstance.checkout.sessions.create({
+      line_items,
+      mode: "payment",
+      success_url: `${origin}/loader/my-bookings`,
+      cancel_url: `${origin}/my-bookings`,
+      metadata: {
+        bookingId,
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      url: session.url,
     });
   } catch (error) {
     console.error(error);
