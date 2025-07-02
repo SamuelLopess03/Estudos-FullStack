@@ -8,6 +8,8 @@ import connectDB from "./configs/db.js";
 import connectCloudinary from "./configs/cloudinary.js";
 
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
+import { stripeWebhooks } from "./controllers/stripeWebhooks.js";
+
 import userRouter from "./routes/user.js";
 import hotelRouter from "./routes/hotel.js";
 import roomRouter from "./routes/room.js";
@@ -15,6 +17,12 @@ import bookingRouter from "./routes/booking.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(
+  "/api/stripe",
+  express.raw({ type: "application/json" }),
+  stripeWebhooks
+);
 
 app.use(cors());
 app.use(express.json());
