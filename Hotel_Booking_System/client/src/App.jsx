@@ -14,8 +14,9 @@ import ListRoom from "./pages/hotelOwner/ListRoom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import HotelReg from "./components/HotelReg";
+import Loader from "./components/Loader";
 
-import { useAppContext } from "./context/AppContext";
+import { useAppContext } from "./context/appContext";
 
 function App() {
   const isOwnerPath = useLocation().pathname.includes("owner");
@@ -35,6 +36,7 @@ function App() {
           <Route path="/rooms" element={<AllRooms />} />
           <Route path="/rooms/:id" element={<RoomsDetails />} />
           <Route path="/my-bookings" element={<MyBookings />} />
+          <Route path="/loader/:nextUrl" element={<Loader />} />
           <Route path="/owner" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="add-room" element={<AddRoom />} />
