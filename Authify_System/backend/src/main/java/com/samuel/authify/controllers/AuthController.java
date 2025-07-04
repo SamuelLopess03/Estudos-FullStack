@@ -12,14 +12,19 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.samuel.authify.io.AuthRequest;
 import com.samuel.authify.io.AuthResponse;
 import com.samuel.authify.services.AppUserDetailsService;
+import com.samuel.authify.services.ProfileService;
 import com.samuel.authify.utils.JWTUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -32,8 +37,10 @@ public class AuthController {
 	
 	private final AppUserDetailsService appUserDetailsService;
 	
-	private final JWTUtil jwtUtil;
+	private final ProfileService profileService;
 	
+	private final JWTUtil jwtUtil;
+
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody AuthRequest request) {
 		try {
@@ -75,6 +82,20 @@ public class AuthController {
 		}
 	}
 
+	@GetMapping("/is-authenticated")
+	public ResponseEntity<Boolean> isAuthenticated(@CurrentSecurityContext(expression = "authentication?.name") String email) {
+		return ResponseEntity.ok(email != null);
+	}
+	
+	@PostMapping("/send-reset-otp")
+	public void sendResetOtp(@RequestParam String email) {
+		try {
+			profileService.sendResetOtp(email);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+		}
+	}
+	
 	private void authenticate(String email, String password) {
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
 	}
