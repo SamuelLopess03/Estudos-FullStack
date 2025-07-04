@@ -1,6 +1,7 @@
 package com.samuel.authify.services;
 
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +23,8 @@ public class ProfileServiceImpl implements ProfileService {
 	private final UserRepository userRepository;
 	
 	private final PasswordEncoder passwordEncoder;
+	
+	private final EmailService emailService;
 
 	@Override
 	public ProfileResponse createProfile(ProfileRequest request) {
@@ -43,6 +46,28 @@ public class ProfileServiceImpl implements ProfileService {
 		
 		
 		return convertToProfileResponse(existingUser);
+	}
+	
+	@Override
+	public void sendResetOtp(String email) {
+		UserEntity existingUser = userRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("User not Found: " + email));
+		
+		String otp = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
+		
+		long expiryTime = System.currentTimeMillis() + (15 * 60 * 1000);
+		
+		existingUser.setResetOtp(otp);
+		existingUser.setResetOtpExpireAt(expiryTime);
+		
+		userRepository.save(existingUser);
+		
+		try {
+			emailService.sendResetOtpEmail(existingUser.getEmail(), otp);
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to Send Email");
+		}
+		
 	}
 
 	private UserEntity convertToUserEntity(ProfileRequest request) {
