@@ -23,10 +23,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.samuel.authify.io.AuthRequest;
 import com.samuel.authify.io.AuthResponse;
+import com.samuel.authify.io.ResetPasswordRequest;
 import com.samuel.authify.services.AppUserDetailsService;
 import com.samuel.authify.services.ProfileService;
 import com.samuel.authify.utils.JWTUtil;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -91,6 +93,15 @@ public class AuthController {
 	public void sendResetOtp(@RequestParam String email) {
 		try {
 			profileService.sendResetOtp(email);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+		}
+	}
+	
+	@PostMapping("/reset-password")
+	public void resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+		try {
+			profileService.resetPassword(request.getEmail(), request.getOtp(), request.getNewPassword());
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
 		}
