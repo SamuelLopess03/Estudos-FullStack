@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import tryCatch from "./tryCatch.js";
 
 import { User } from "./model.js";
+import { AuthenticatedRequest } from "./middleware.js";
 
 export const registerUser = tryCatch(async (req, res) => {
   const { name, email, password } = req.body;
@@ -68,4 +69,10 @@ export const loginUser = tryCatch(async (req, res) => {
     user,
     token,
   });
+});
+
+export const myProfile = tryCatch(async (req: AuthenticatedRequest, res) => {
+  const user = req.user;
+
+  res.status(200).json(user);
 });
