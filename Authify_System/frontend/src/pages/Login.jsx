@@ -1,10 +1,61 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 import { assets } from "../assets/assets.js";
+import { AppContext } from "../context/AppContext.jsx";
 
 const Login = () => {
-  const [isCreatedAccount, setIsCreatedAccount] = useState(true);
+  const [isCreatedAccount, setIsCreatedAccount] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const { backendUrl, setIsLoggedIn, getUserData } = useContext(AppContext);
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    axios.defaults.withCredentials = true;
+    setLoading(true);
+
+    try {
+      if (isCreatedAccount) {
+        const response = await axios.post(`${backendUrl}/register`, {
+          name,
+          email,
+          password,
+        });
+
+        if (response.status === 201) {
+          navigate("/");
+          toast.success("Account Created Successfully!");
+        } else {
+          toast.error("Email Already Exists!");
+        }
+      } else {
+        const response = await axios.post(`${backendUrl}/login`, {
+          email,
+          password,
+        });
+
+        if (response.status === 200) {
+          setIsLoggedIn(true);
+          getUserData();
+          navigate("/");
+        } else {
+          toast.error("Invalid Credentials!");
+        }
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -44,7 +95,7 @@ const Login = () => {
           {isCreatedAccount ? "Create Account" : "Login"}
         </h2>
 
-        <form action="">
+        <form onSubmit={onSubmitHandler}>
           {isCreatedAccount && (
             <div className="mb-3">
               <label htmlFor="fullName" className="form-label">
@@ -55,6 +106,8 @@ const Login = () => {
                 id="fullName"
                 className="form-control"
                 placeholder="Enter Full Name"
+                onChange={(e) => setName(e.target.value)}
+                value={name}
                 required
               />
             </div>
@@ -69,6 +122,8 @@ const Login = () => {
               id="email"
               className="form-control"
               placeholder="Enter Email"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
               required
             />
           </div>
@@ -82,6 +137,8 @@ const Login = () => {
               id="password"
               className="form-control"
               placeholder="************"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
               required
             />
           </div>
@@ -92,8 +149,12 @@ const Login = () => {
             </Link>
           </div>
 
-          <button type="submit" className="btn btn-primary w-100">
-            {isCreatedAccount ? "Sign Up" : "Login"}
+          <button
+            type="submit"
+            className="btn btn-primary w-100"
+            disabled={loading}
+          >
+            {loading ? "Loading..." : isCreatedAccount ? "Sign Up" : "Login"}
           </button>
         </form>
 
