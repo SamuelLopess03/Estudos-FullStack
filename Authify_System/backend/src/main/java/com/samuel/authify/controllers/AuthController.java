@@ -28,6 +28,7 @@ import com.samuel.authify.services.AppUserDetailsService;
 import com.samuel.authify.services.ProfileService;
 import com.samuel.authify.utils.JWTUtil;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -82,6 +83,21 @@ public class AuthController {
 			
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
 		}
+	}
+	
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(HttpServletResponse response){
+		ResponseCookie cookie = ResponseCookie.from("jwt", "")
+				.httpOnly(true)
+				.secure(false)
+				.path("/")
+				.maxAge(0)
+				.sameSite("Strict")
+				.build();
+		
+		return ResponseEntity.ok()
+				.header(HttpHeaders.SET_COOKIE, cookie.toString())
+				.body("Logged Out Successfully!");
 	}
 
 	@GetMapping("/is-authenticated")
