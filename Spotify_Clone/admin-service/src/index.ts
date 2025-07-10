@@ -1,9 +1,17 @@
 import express from "express";
 import dotenv from "dotenv";
+import cloudinary from "cloudinary";
 
 import { sql } from "./configs/db.js";
+import adminRoutes from "./route.js";
 
 dotenv.config();
+
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
 
 async function initDB() {
   try {
@@ -38,6 +46,10 @@ async function initDB() {
 const app = express();
 
 const PORT = process.env.PORT || 7000;
+
+app.use(express.json());
+
+app.use("/api/v1", adminRoutes);
 
 initDB().then(() => {
   app.listen(PORT, () => {
