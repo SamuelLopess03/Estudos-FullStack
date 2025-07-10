@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import multer from "multer";
 import axios from "axios";
 
 interface IUser {
@@ -13,6 +14,8 @@ interface IUser {
 interface AuthenticatedRequest extends Request {
   user?: IUser | null;
 }
+
+const storage = multer.memoryStorage();
 
 export const isAuth = async (
   req: AuthenticatedRequest,
@@ -41,3 +44,5 @@ export const isAuth = async (
     });
   }
 };
+
+export const uploadFile = multer({ storage }).single("file");
