@@ -32,6 +32,22 @@ const Menubar = () => {
     }
   };
 
+  const sendVerificationOtp = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      const response = await axios.post(backendUrl + "/send-otp");
+
+      if (response.status === 200) {
+        toast.success("OTP has Been Sent Successfully");
+        navigate("/email-verify");
+      } else {
+        toast.error("Unable to Send OTP");
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -80,6 +96,7 @@ const Menubar = () => {
                 <div
                   className="dropdown-item py-1 px-2"
                   style={{ cursor: "pointer" }}
+                  onClick={sendVerificationOtp}
                 >
                   Verify Email
                 </div>
