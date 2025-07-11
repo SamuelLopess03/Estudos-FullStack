@@ -151,3 +151,33 @@ export const addThumbnail = tryCatch(async (req: AuthenticatedRequest, res) => {
     song: result[0],
   });
 });
+
+export const deleteAlbum = tryCatch(async (req: AuthenticatedRequest, res) => {
+  if (req.user?.role !== "admin") {
+    res.status(403).json({
+      message: "You are not Admin",
+    });
+
+    return;
+  }
+
+  const { id } = req.params;
+
+  const isAlbum = await sql`SELECT * FROM albums WHERE id = ${id}`;
+
+  if (isAlbum.length === 0) {
+    res.status(404).json({
+      message: "No Album With This Id",
+    });
+
+    return;
+  }
+
+  await sql`DELETE FROM songs WHERE album_id = ${id}`;
+
+  await sql`DELETE FROM albums WHERE id = ${id}`;
+
+  res.status(200).json({
+    message: "Album Deleted Successfully",
+  });
+});
