@@ -181,3 +181,31 @@ export const deleteAlbum = tryCatch(async (req: AuthenticatedRequest, res) => {
     message: "Album Deleted Successfully",
   });
 });
+
+export const deleteSong = tryCatch(async (req: AuthenticatedRequest, res) => {
+  if (req.user?.role !== "admin") {
+    res.status(403).json({
+      message: "You are not Admin",
+    });
+
+    return;
+  }
+
+  const { id } = req.params;
+
+  const song = await sql`SELECT * FROM songs WHERE id = ${id}`;
+
+  if (song.length === 0) {
+    res.status(404).json({
+      message: "No Song With This Id",
+    });
+
+    return;
+  }
+
+  await sql`DELETE FROM songs WHERE id = ${id}`;
+
+  res.status(200).json({
+    message: "Song Deleted Successfully",
+  });
+});
