@@ -1,5 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+
 import cloudinary from "cloudinary";
 import redis from "redis";
 
@@ -64,6 +66,7 @@ const app = express();
 const PORT = process.env.PORT || 7000;
 
 app.use(express.json());
+app.use(cors());
 
 app.use("/api/v1", adminRoutes);
 
