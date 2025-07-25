@@ -1,8 +1,21 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+import { useUserData } from "../context/UserContext";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+
+  const navigate = useNavigate();
+
+  const { loginUser, btnLoading } = useUserData();
+
+  const submitHandler = (event: any) => {
+    event.preventDefault();
+
+    loginUser(email, password, navigate);
+  };
 
   return (
     <div className="flex items-center justify-center h-screen max-h-screen">
@@ -11,7 +24,7 @@ const Login = () => {
           Login To Spotify
         </h2>
 
-        <form className="mt-8">
+        <form className="mt-8" onSubmit={submitHandler}>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">
               Email or Username
@@ -40,8 +53,19 @@ const Login = () => {
             />
           </div>
 
-          <button className="auth-btn">Login</button>
+          <button disabled={btnLoading} className="auth-btn">
+            {btnLoading ? "Please Wait..." : "Login"}
+          </button>
         </form>
+
+        <div className="text-center mt-6">
+          <Link
+            to={"/register"}
+            className="text-sm text-gray-400 hover:text-gray-300"
+          >
+            Don't Have an Account?
+          </Link>
+        </div>
       </div>
     </div>
   );
