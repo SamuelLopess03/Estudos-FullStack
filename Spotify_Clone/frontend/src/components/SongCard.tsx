@@ -1,6 +1,9 @@
 import type React from "react";
 import { FaBookmark, FaPlay } from "react-icons/fa";
 
+import { useUserData } from "../context/UserContext";
+import { useSongData } from "../context/SongContext";
+
 interface SongCardProps {
   id: string;
   name: string;
@@ -9,6 +12,13 @@ interface SongCardProps {
 }
 
 const SongCard: React.FC<SongCardProps> = ({ id, name, desc, image }) => {
+  const { addToPlaylist, isAuth } = useUserData();
+  const { setSelectedSong, setIsPlaying } = useSongData();
+
+  const saveToPlaylistHandler = () => {
+    addToPlaylist(id);
+  };
+
   return (
     <div className="min-w-[180px] p-2 px-3 rounded cursor-pointer hover:bg-[#ffffff26]">
       <div className="relative group">
@@ -22,16 +32,23 @@ const SongCard: React.FC<SongCardProps> = ({ id, name, desc, image }) => {
           <button
             className="absolute bottom-2 right-14 bg-green-500 text-black p-3 rounded-full 
                        opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            onClick={() => {
+              setSelectedSong(id);
+              setIsPlaying(true);
+            }}
           >
             <FaPlay />
           </button>
 
-          <button
-            className="absolute bottom-2 right-2 bg-green-500 text-black p-3 rounded-full 
+          {isAuth && (
+            <button
+              className="absolute bottom-2 right-2 bg-green-500 text-black p-3 rounded-full 
                        opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          >
-            <FaBookmark />
-          </button>
+              onClick={saveToPlaylistHandler}
+            >
+              <FaBookmark />
+            </button>
+          )}
         </div>
       </div>
 
