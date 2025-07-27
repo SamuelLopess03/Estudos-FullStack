@@ -6,6 +6,7 @@ import Loading from "./components/Loading";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Album from "./pages/Album";
 
 function App() {
   const { isAuth, loading } = useUserData();
@@ -23,6 +24,7 @@ function App() {
               path="/register"
               element={isAuth ? <Home /> : <Register />}
             />
+            <Route path="/album/:id" element={<Album />} />
           </Routes>
         </BrowserRouter>
       )}
