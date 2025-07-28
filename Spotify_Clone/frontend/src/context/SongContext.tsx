@@ -36,6 +36,8 @@ interface SongContextType {
   selectedSong: string | null;
   setIsPlaying: (value: boolean) => void;
   setSelectedSong: (value: string) => void;
+  fetchSongs: () => Promise<void>;
+  fetchAlbums: () => Promise<void>;
   fetchSingleSong: () => Promise<void>;
   fetchAlbumSongs: (id: string) => Promise<void>;
   nextSong: () => void;
@@ -151,6 +153,8 @@ export const SongProvider: React.FC<SongProviderProps> = ({ children }) => {
     selectedSong,
     setIsPlaying,
     setSelectedSong,
+    fetchSongs,
+    fetchAlbums,
     fetchSingleSong,
     fetchAlbumSongs,
     nextSong,
