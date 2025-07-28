@@ -1,8 +1,12 @@
 import { useNavigate } from "react-router-dom";
 
+import { useUserData } from "../context/UserContext";
+
 import PlayListCard from "./PlayListCard";
 
 const Sidebar = () => {
+  const { user } = useUserData();
+
   const navigate = useNavigate();
 
   return (
@@ -46,6 +50,15 @@ const Sidebar = () => {
             Browse Podcasts
           </button>
         </div>
+
+        {user && user.role === "admin" && (
+          <button
+            className="px-4 py-1.5 bg-white text-black text-[15px] rounded-full mt-4 ml-5 cursor-pointer font-semibold"
+            onClick={() => navigate("/admin/dashboard")}
+          >
+            Admin Dashboard
+          </button>
+        )}
       </div>
     </div>
   );
