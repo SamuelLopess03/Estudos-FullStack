@@ -130,6 +130,49 @@ const Admin = () => {
     }
   };
 
+  const deleteAlbum = async (id: string) => {
+    if (confirm("Are you sure you want to delete this album?")) {
+      setBtnLoading(true);
+
+      try {
+        const { data } = await axios.delete(`${server}/api/v1/album/${id}`, {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        });
+
+        toast.success(data.message);
+        fetchSongs();
+        fetchAlbums();
+        setBtnLoading(false);
+      } catch (error: any) {
+        toast.error(error.response?.data?.message || "An Error Occured");
+        setBtnLoading(false);
+      }
+    }
+  };
+
+  const deleteSong = async (id: string) => {
+    if (confirm("Are you sure you want to delete this song?")) {
+      setBtnLoading(true);
+
+      try {
+        const { data } = await axios.delete(`${server}/api/v1/song/${id}`, {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        });
+
+        toast.success(data.message);
+        fetchSongs();
+        setBtnLoading(false);
+      } catch (error: any) {
+        toast.error(error.response?.data?.message || "An Error Occured");
+        setBtnLoading(false);
+      }
+    }
+  };
+
   useEffect(() => {
     if (user && user.role !== "admin") {
       navigate("/");
@@ -259,6 +302,7 @@ const Admin = () => {
               <button
                 className="px-3 py-1 mt-3 bg-red-500 text-white rounded cursor-pointer"
                 disabled={btnLoading}
+                onClick={() => deleteAlbum(album.id)}
               >
                 <MdDelete />
               </button>
@@ -297,6 +341,7 @@ const Admin = () => {
               <button
                 className="px-3 py-1 mt-3 bg-red-500 text-white rounded cursor-pointer"
                 disabled={btnLoading}
+                onClick={() => deleteSong(song.id)}
               >
                 <MdDelete />
               </button>
