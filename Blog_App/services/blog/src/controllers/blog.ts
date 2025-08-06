@@ -48,14 +48,42 @@ export const getAllBlogs = tryCatch(async (req, res) => {
 });
 
 export const getSingleBlog = tryCatch(async (req, res) => {
-  const blog = await sql`SELECT * FROM blogs WHERE id = ${req.params.id}`;
+  const blogId = req.params.id;
+
+  const cacheKey = `blog:${blogId}`;
+
+  const cached = await redisClient.get(cacheKey);
+
+  if (cached) {
+    console.log("Serving Single Blog From Redis Cache");
+
+    res.status(200).json(JSON.parse(cached));
+
+    return;
+  }
+
+  const blog = await sql`SELECT * FROM blogs WHERE id = ${blogId}`;
+
+  if (blog.length === 0) {
+    res.status(404).json({
+      message: "No Blog With This ID",
+    });
+
+    return;
+  }
 
   const { data } = await axios.get(
     `${process.env.USER_SERVICE}/api/v1/user/${blog[0].author}`
   );
 
-  res.status(200).json({
+  const responseData = {
     blog: blog[0],
     author: data,
+  };
+
+  await redisClient.set(cacheKey, JSON.stringify(responseData), {
+    EX: 3600,
   });
+
+  res.status(200).json(responseData);
 });
