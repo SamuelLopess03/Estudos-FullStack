@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import { createClient } from "redis";
 
+import { startCacheConsumer } from "./utils/consumerRabbitMQ.js";
+
 import blogRoutes from "./routes/blog.js";
 
 dotenv.config();
@@ -14,6 +16,8 @@ redisClient
   .connect()
   .then(() => console.log("Connected to Redis"))
   .catch(console.error);
+
+startCacheConsumer();
 
 const app = express();
 
