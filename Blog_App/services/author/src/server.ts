@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
 
 import { sql } from "./utils/db.js";
+import { connectRabbitMQ } from "./utils/rabbitMQ.js";
+
 import blogRoutes from "./routes/blog.js";
 
 dotenv.config();
@@ -53,6 +55,8 @@ async function initDB() {
     console.error("Error initDB: ", error);
   }
 }
+
+connectRabbitMQ();
 
 const app = express();
 
