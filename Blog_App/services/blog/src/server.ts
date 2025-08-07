@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import { createClient } from "redis";
 
 import { startCacheConsumer } from "./utils/consumerRabbitMQ.js";
@@ -22,6 +23,9 @@ startCacheConsumer();
 const app = express();
 
 const port = process.env.PORT || 5002;
+
+app.use(express.json());
+app.use(cors());
 
 app.use("/api/v1", blogRoutes);
 
