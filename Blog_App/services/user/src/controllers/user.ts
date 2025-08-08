@@ -1,20 +1,40 @@
 import { Response } from "express";
 import { v2 as cloudinary } from "cloudinary";
 import jwt from "jsonwebtoken";
+import axios from "axios";
 
 import User from "../models/User.js";
+import { AuthenticatedRequest } from "../middlewares/isAuth.js";
 import tryCatch from "../utils/tryCatch.js";
 import getBuffer from "../utils/dataUri.js";
-import { AuthenticatedRequest } from "../middlewares/isAuth.js";
+import { oAuth2Client } from "../utils/googleConfig.js";
 
 export const loginUser = tryCatch(
   async (req: AuthenticatedRequest, res: Response) => {
-    const { email, name, image } = req.body;
+    const { code } = req.body;
+
+    if (!code) {
+      res.status(400).json({
+        message: "Authorization Code is Required",
+      });
+
+      return;
+    }
+
+    const googleRes = await oAuth2Client.getToken(code);
+
+    oAuth2Client.setCredentials(googleRes.tokens);
+
+    const userRes = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+    );
+
+    const { email, name, picture } = userRes.data as any;
 
     let user = await User.findOne({ email });
 
     if (!user) {
-      user = await User.create({ name, email, image });
+      user = await User.create({ name, email, image: picture });
     }
 
     const token = jwt.sign({ user }, process.env.JWT_SECRET as string, {
