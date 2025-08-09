@@ -11,7 +11,7 @@ import { oAuth2Client } from "../utils/googleConfig.js";
 
 export const loginUser = tryCatch(
   async (req: AuthenticatedRequest, res: Response) => {
-    const { code } = req.body;
+    const { code, redirect_uri } = req.body;
 
     if (!code) {
       res.status(400).json({
@@ -21,7 +21,10 @@ export const loginUser = tryCatch(
       return;
     }
 
-    const googleRes = await oAuth2Client.getToken(code);
+    const googleRes = await oAuth2Client.getToken({
+      code,
+      redirect_uri: redirect_uri,
+    });
 
     oAuth2Client.setCredentials(googleRes.tokens);
 

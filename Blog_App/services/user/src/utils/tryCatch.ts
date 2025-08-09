@@ -5,6 +5,8 @@ const tryCatch = (handler: RequestHandler): RequestHandler => {
     try {
       await handler(req, res, next);
     } catch (error: any) {
+      console.error(error);
+
       res.status(500).json({
         message: error.message,
       });
