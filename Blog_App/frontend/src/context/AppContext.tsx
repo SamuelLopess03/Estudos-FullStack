@@ -42,6 +42,7 @@ interface AppContextType {
   user: User | null;
   loading: boolean;
   isAuth: boolean;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -86,6 +87,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     loading,
     setIsAuth,
     setLoading,
+    setUser,
   };
 
   return (
