@@ -2,13 +2,17 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
+import { CircleUserRoundIcon, LogIn, Menu, X } from "lucide-react";
 
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { LogIn, Menu, X } from "lucide-react";
+
+import { useAppData } from "@/context/AppContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const { loading, isAuth } = useAppData();
 
   return (
     <nav className="bg-white shadow-md p-4 z-50">
@@ -35,9 +39,17 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link href={"/login"} className="hover:text-blue-500">
-              <LogIn />
-            </Link>
+            {loading ? (
+              ""
+            ) : isAuth ? (
+              <Link href={"/profile"} className="hover:text-blue-500">
+                <CircleUserRoundIcon />
+              </Link>
+            ) : (
+              <Link href={"/login"} className="hover:text-blue-500">
+                <LogIn />
+              </Link>
+            )}
           </li>
         </ul>
       </div>
