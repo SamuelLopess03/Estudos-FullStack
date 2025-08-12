@@ -9,12 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-dialog": "^1.1.14",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-select": "^2.2.5",
     "@react-oauth/google": "^0.12.2",
     "@types/axios": "^0.9.36",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "jodit-react": "^5.2.19",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",
