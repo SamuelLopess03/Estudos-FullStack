@@ -40,7 +40,9 @@ export interface Blog {
 
 interface AppContextType {
   user: User | null;
+  blogs: Blog[] | null;
   loading: boolean;
+  blogLoading: boolean;
   isAuth: boolean;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -56,8 +58,10 @@ interface AppProviderProps {
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [blogs, setBlogs] = useState<Blog[] | null>(null);
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [blogLoading, setBlogLoading] = useState<boolean>(true);
 
   async function fetchUser() {
     try {
@@ -86,14 +90,33 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     toast.success("User Logged Out");
   }
 
+  async function fetchBlogs() {
+    setBlogLoading(true);
+
+    try {
+      const { data } = await axios.get<Blog[]>(
+        `${blog_service}/api/v1/blog/all`
+      );
+
+      setBlogs(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     fetchUser();
+    fetchBlogs();
   }, []);
 
   const value = {
     user,
+    blogs,
     isAuth,
     loading,
+    blogLoading,
     setIsAuth,
     setLoading,
     setUser,
