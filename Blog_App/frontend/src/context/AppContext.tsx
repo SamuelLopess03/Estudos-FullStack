@@ -44,9 +44,12 @@ interface AppContextType {
   loading: boolean;
   blogLoading: boolean;
   isAuth: boolean;
+  searchQuery: string;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
   logoutUser: () => Promise<void>;
 }
 
@@ -62,6 +65,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [blogLoading, setBlogLoading] = useState<boolean>(true);
+
+  const [category, setCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   async function fetchUser() {
     try {
@@ -95,21 +101,24 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
     try {
       const { data } = await axios.get<Blog[]>(
-        `${blog_service}/api/v1/blog/all`
+        `${blog_service}/api/v1/blog/all?searchQuery=${searchQuery}&category=${category}`
       );
 
       setBlogs(data);
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      setBlogLoading(false);
     }
   }
 
   useEffect(() => {
     fetchUser();
-    fetchBlogs();
   }, []);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [searchQuery, category]);
 
   const value = {
     user,
@@ -117,9 +126,12 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     isAuth,
     loading,
     blogLoading,
+    searchQuery,
     setIsAuth,
     setLoading,
     setUser,
+    setSearchQuery,
+    setCategory,
     logoutUser,
   };
 
