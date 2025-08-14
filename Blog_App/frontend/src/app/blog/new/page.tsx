@@ -23,7 +23,7 @@ import { author_service } from "@/context/AppContext";
 
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
-const blogCategories = [
+export const blogCategories = [
   "Tecnology",
   "Health",
   "Finance",
