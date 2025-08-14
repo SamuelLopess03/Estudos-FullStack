@@ -1,15 +1,7 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-
-import { useAppData } from "@/context/AppContext";
-
-import Loading from "@/components/loading";
+import { redirect } from "next/navigation";
 
 const Home = () => {
-  const { loading } = useAppData();
-
-  return <div>{loading ? <Loading /> : <Button>Click Me</Button>}</div>;
+  return redirect("/blogs");
 };
 
 export default Home;

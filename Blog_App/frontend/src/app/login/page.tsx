@@ -23,7 +23,7 @@ import { useAppData, user_service, User } from "@/context/AppContext";
 const LoginPage = () => {
   const { isAuth, loading, setIsAuth, setLoading, setUser } = useAppData();
 
-  if (isAuth) return redirect("/");
+  if (isAuth) return redirect("/blogs");
 
   const responseGoogle = async (authResult: any) => {
     setLoading(true);
