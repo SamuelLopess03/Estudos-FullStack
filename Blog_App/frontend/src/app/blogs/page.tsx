@@ -5,6 +5,7 @@ import { Filter } from "lucide-react";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
+import BlogCard from "@/components/blogCard";
 
 import { useAppData } from "@/context/AppContext";
 
@@ -32,11 +33,20 @@ const Blogs = () => {
           {blogLoading ? (
             <Loading />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {blogs?.length === 0 && <p>No Blogs Yet</p>}
               {blogs &&
                 blogs.map((element, index) => {
-                  return <p key={index}>{element.title}</p>;
+                  return (
+                    <BlogCard
+                      key={index}
+                      id={element.id}
+                      image={element.image}
+                      title={element.title}
+                      desc={element.description}
+                      time={element.created_at}
+                    />
+                  );
                 })}
             </div>
           )}
