@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { author_service } from "@/context/AppContext";
+import { author_service, useAppData } from "@/context/AppContext";
 
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
@@ -34,6 +34,8 @@ export const blogCategories = [
 ];
 
 const AddBlog = () => {
+  const { fetchBlogs } = useAppData();
+
   const editor = useRef(null);
 
   const [content, setContent] = useState("");
@@ -166,6 +168,8 @@ const AddBlog = () => {
         blogcontent: "",
       });
       setContent("");
+
+      fetchBlogs();
     } catch (error) {
       toast.error("Error While Adding Blog");
 
