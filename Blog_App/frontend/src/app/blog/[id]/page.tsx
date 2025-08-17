@@ -1,27 +1,39 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 import React, { useEffect, useState } from "react";
-import { Bookmark, Edit, Trash2Icon } from "lucide-react";
+import toast from "react-hot-toast";
+import { Bookmark, Edit, Trash2Icon, User2 } from "lucide-react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import Loading from "@/components/loading";
 
-import { Blog, blog_service, useAppData, User } from "@/context/AppContext";
-import { Input } from "@/components/ui/input";
+import {
+  blog_service,
+  useAppData,
+  Blog,
+  User,
+  Comment,
+} from "@/context/AppContext";
 
 const BlogPage = () => {
   const { isAuth, user } = useAppData();
 
   const { id } = useParams();
 
+  const router = useRouter();
+
   const [blog, setBlog] = useState<Blog | null>(null);
   const [author, setAuthor] = useState<User | null>(null);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
 
   async function fetchSingleBlog() {
@@ -41,8 +53,51 @@ const BlogPage = () => {
     }
   }
 
+  async function addComment() {
+    try {
+      setLoading(true);
+
+      const token = Cookies.get("token");
+      const { data } = await axios.post<{ message: string }>(
+        `${blog_service}/api/v1/comment/${id}`,
+        { comment },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(data.message);
+      setComment("");
+    } catch (error) {
+      toast.error("Problem While Adding Comment");
+
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function fetchComments() {
+    try {
+      setLoading(true);
+
+      const { data } = await axios.get<Comment[]>(
+        `${blog_service}/api/v1/comment/${id}`
+      );
+
+      setComments(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     fetchSingleBlog();
+    fetchComments();
   }, [id]);
 
   if (!blog) {
@@ -77,7 +132,11 @@ const BlogPage = () => {
             )}
             {blog.author === user?._id && (
               <>
-                <Button size={"sm"} className="cursor-pointer">
+                <Button
+                  size={"sm"}
+                  className="cursor-pointer"
+                  onClick={() => router.push(`/blog/edit/${id}`)}
+                >
                   <Edit />
                 </Button>
 
@@ -117,11 +176,48 @@ const BlogPage = () => {
               id="comment"
               placeholder="Type Your Comment Here"
               className="my-5"
+              value={comment}
+              onChange={(element) => setComment(element.target.value)}
             />
-            <Button>Post Comment</Button>
+            <Button onClick={addComment} disabled={loading}>
+              {loading ? "Adding Comment..." : "Post Comment"}
+            </Button>
           </CardContent>
         </Card>
       )}
+
+      <Card>
+        <CardHeader>
+          <h3 className="text-lg font-medium">All Comments</h3>
+        </CardHeader>
+        <CardContent>
+          {comments && comments.length > 0 ? (
+            comments.map((element, index) => (
+              <div
+                key={index}
+                className="border-b py-2 flex items-center gap-3"
+              >
+                <div>
+                  <p className="font-semibold flex items-center gap-1">
+                    <span className="user border border-gray-400 rounded-full p-1">
+                      <User2 />
+                    </span>
+                    {element.username}
+                  </p>
+
+                  <p>{element.comment}</p>
+
+                  <p className="text-xs text-gray-500">
+                    {new Date(element.create_at).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No Comments Yet</p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
