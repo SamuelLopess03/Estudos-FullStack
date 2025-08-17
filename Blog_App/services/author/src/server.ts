@@ -36,7 +36,7 @@ async function initDB() {
                 id SERIAL PRIMARY KEY,
                 comment VARCHAR(255) NOT NULL,
                 userid VARCHAR(255) NOT NULL,
-                userimage VARCHAR(255) NOT NULL,
+                username VARCHAR(255) NOT NULL,
                 blogid VARCHAR(255) NOT NULL,
                 create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );

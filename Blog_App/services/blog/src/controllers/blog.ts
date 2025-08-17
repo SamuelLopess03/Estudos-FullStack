@@ -1,7 +1,11 @@
+import { Response } from "express";
 import axios from "axios";
 
 import tryCatch from "../utils/tryCatch.js";
 import { sql } from "../utils/db.js";
+
+import { AuthenticatedRequest } from "../middlewares/isAuth.js";
+
 import { redisClient } from "../server.js";
 
 export const getAllBlogs = tryCatch(async (req, res) => {
@@ -87,3 +91,58 @@ export const getSingleBlog = tryCatch(async (req, res) => {
 
   res.status(200).json(responseData);
 });
+
+export const addComment = tryCatch(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const { id: blogid } = req.params;
+    const { comment } = req.body;
+
+    await sql`
+      INSERT INTO comments (comment, blogid, userid, username) VALUES (
+        ${comment}, ${blogid}, ${req.user?._id}, ${req.user?.name}
+      ) RETURNING *
+    `;
+
+    res.status(201).json({
+      message: "Comment Added",
+    });
+  }
+);
+
+export const getAllComments = tryCatch(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+
+    const comments = await sql`
+      SELECT * FROM comments WHERE blogid = ${id} ORDER BY create_at DESC
+    `;
+
+    res.status(200).json(comments);
+  }
+);
+
+export const deleteComment = tryCatch(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const { commentid } = req.params;
+
+    const comment = await sql`
+      SELECT * FROM comments WHERE id = ${commentid}
+    `;
+
+    if (comment[0].userid !== req.user?._id) {
+      res.status(403).json({
+        message: "You Are Not Owner of This Comment",
+      });
+
+      return;
+    }
+
+    await sql`
+      DELETE FROM comments WHERE id = ${commentid}
+    `;
+
+    res.status(200).json({
+      message: "Comment Deleted",
+    });
+  }
+);
