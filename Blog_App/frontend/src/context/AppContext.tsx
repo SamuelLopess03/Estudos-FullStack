@@ -35,7 +35,16 @@ export interface Blog {
   image: string;
   category: string;
   author: string;
-  created_at: string;
+  create_at: string;
+}
+
+export interface Comment {
+  id: string;
+  comment: string;
+  userid: string;
+  username: string;
+  blogid: string;
+  create_at: string;
 }
 
 interface AppContextType {
@@ -51,6 +60,7 @@ interface AppContextType {
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   setCategory: React.Dispatch<React.SetStateAction<string>>;
   logoutUser: () => Promise<void>;
+  fetchBlogs: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -133,6 +143,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setSearchQuery,
     setCategory,
     logoutUser,
+    fetchBlogs,
   };
 
   return (
