@@ -5,7 +5,9 @@ import {
   deleteComment,
   getAllBlogs,
   getAllComments,
+  getSavedBlogs,
   getSingleBlog,
+  saveBlog,
 } from "../controllers/blog.js";
 
 import { isAuth } from "../middlewares/isAuth.js";
@@ -17,6 +19,9 @@ router.get("/blog/:id", getSingleBlog);
 
 router.post("/comment/:id", isAuth, addComment);
 router.get("/comment/:id", getAllComments);
-router.delete("/comment/:id", isAuth, deleteComment);
+router.delete("/comment/:commentid", isAuth, deleteComment);
+
+router.get("/blog/saved/all", isAuth, getSavedBlogs);
+router.post("/save/:blogid", isAuth, saveBlog);
 
 export default router;
