@@ -44,7 +44,7 @@ const Blogs = () => {
                       image={element.image}
                       title={element.title}
                       desc={element.description}
-                      time={element.created_at}
+                      time={element.create_at}
                     />
                   );
                 })}

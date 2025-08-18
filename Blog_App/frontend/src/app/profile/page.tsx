@@ -28,8 +28,6 @@ import { useAppData, User, user_service } from "@/context/AppContext";
 const ProfilePage = () => {
   const { user, setUser, logoutUser } = useAppData();
 
-  if (!user) return redirect("/login");
-
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -138,6 +136,8 @@ const ProfilePage = () => {
       });
     }
   }, [user]);
+
+  if (!user) return redirect("/login");
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
