@@ -146,3 +146,52 @@ export const deleteComment = tryCatch(
     });
   }
 );
+
+export const saveBlog = tryCatch(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const { blogid } = req.params;
+    const userid = req.user?._id;
+
+    if (!blogid || !userid) {
+      res.status(400).json({
+        message: "Missing Blog ID or User ID",
+      });
+
+      return;
+    }
+
+    const existing = await sql`
+      SELECT * FROM savedblogs WHERE userid = ${userid} AND blogid = ${blogid}
+    `;
+
+    if (existing.length !== 0) {
+      await sql`
+        DELETE FROM savedblogs WHERE userid = ${userid} AND blogid = ${blogid}
+      `;
+
+      res.status(200).json({
+        message: "Blog Removed from Saved Items",
+      });
+
+      return;
+    }
+
+    await sql`
+      INSERT INTO savedblogs (blogid, userid) VALUES (${blogid}, ${userid})
+    `;
+
+    res.status(200).json({
+      message: "Blog Saved",
+    });
+  }
+);
+
+export const getSavedBlogs = tryCatch(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const blogs = await sql`
+      SELECT * FROM savedblogs WHERE userid = ${req.user?._id}
+    `;
+
+    res.status(200).json(blogs);
+  }
+);
