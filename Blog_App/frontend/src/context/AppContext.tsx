@@ -47,9 +47,17 @@ export interface Comment {
   create_at: string;
 }
 
+interface SavedBlogType {
+  id: string;
+  userid: string;
+  blogid: string;
+  create_at: string;
+}
+
 interface AppContextType {
   user: User | null;
   blogs: Blog[] | null;
+  savedBlogs: SavedBlogType[] | null;
   loading: boolean;
   blogLoading: boolean;
   isAuth: boolean;
@@ -61,6 +69,7 @@ interface AppContextType {
   setCategory: React.Dispatch<React.SetStateAction<string>>;
   logoutUser: () => Promise<void>;
   fetchBlogs: () => Promise<void>;
+  getSavedBlogs: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -78,6 +87,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
   const [category, setCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [savedBlogs, setSavedBlogs] = useState<SavedBlogType[] | null>(null);
 
   async function fetchUser() {
     try {
@@ -122,8 +133,28 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }
 
+  async function getSavedBlogs() {
+    const token = Cookies.get("token");
+
+    try {
+      const { data } = await axios.get<SavedBlogType[]>(
+        `${blog_service}/api/v1/blog/saved/all`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setSavedBlogs(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     fetchUser();
+    getSavedBlogs();
   }, []);
 
   useEffect(() => {
@@ -133,6 +164,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const value = {
     user,
     blogs,
+    savedBlogs,
     isAuth,
     loading,
     blogLoading,
@@ -144,6 +176,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setCategory,
     logoutUser,
     fetchBlogs,
+    getSavedBlogs,
   };
 
   return (
