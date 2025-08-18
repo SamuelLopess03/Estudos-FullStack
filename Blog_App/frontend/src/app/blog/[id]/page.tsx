@@ -5,7 +5,14 @@ import Link from "next/link";
 
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Bookmark, Edit, Trash2Icon, User2 } from "lucide-react";
+import {
+  Bookmark,
+  BookmarkCheck,
+  Edit,
+  Trash2,
+  Trash2Icon,
+  User2,
+} from "lucide-react";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -21,10 +28,11 @@ import {
   Blog,
   User,
   Comment,
+  author_service,
 } from "@/context/AppContext";
 
 const BlogPage = () => {
-  const { isAuth, user } = useAppData();
+  const { isAuth, user, savedBlogs, fetchBlogs, getSavedBlogs } = useAppData();
 
   const { id } = useParams();
 
@@ -35,6 +43,68 @@ const BlogPage = () => {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  async function saveBlog() {
+    const token = Cookies.get("token");
+
+    try {
+      setLoading(true);
+
+      const { data } = await axios.post<{ message: string }>(
+        `${blog_service}/api/v1/save/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(data.message);
+
+      setSaved(!saved);
+      getSavedBlogs();
+    } catch (error) {
+      toast.error("Problem While Saving Blog");
+
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function deleteBlog() {
+    if (confirm("Are you sure you want to delete this blog")) {
+      try {
+        setLoading(true);
+
+        const token = Cookies.get("token");
+        const { data } = await axios.delete<{ message: string }>(
+          `${author_service}/api/v1/blog/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        toast.success(data.message);
+
+        router.push("/blogs");
+
+        setTimeout(() => {
+          fetchBlogs();
+        }, 4000);
+      } catch (error) {
+        toast.error("Problem While Deleting Comment");
+
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
 
   async function fetchSingleBlog() {
     try {
@@ -70,12 +140,40 @@ const BlogPage = () => {
 
       toast.success(data.message);
       setComment("");
+      fetchComments();
     } catch (error) {
       toast.error("Problem While Adding Comment");
 
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function deleteComment(id: string) {
+    if (confirm("Are you sure you want to delete this comment")) {
+      try {
+        setLoading(true);
+
+        const token = Cookies.get("token");
+        const { data } = await axios.delete<{ message: string }>(
+          `${blog_service}/api/v1/comment/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        toast.success(data.message);
+        fetchComments();
+      } catch (error) {
+        toast.error("Problem While Deleting Comment");
+
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     }
   }
 
@@ -94,6 +192,16 @@ const BlogPage = () => {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (savedBlogs && savedBlogs.some((blog) => blog.blogid === id)) {
+      setSaved(true);
+
+      return;
+    }
+
+    setSaved(false);
+  }, [savedBlogs, id]);
 
   useEffect(() => {
     fetchSingleBlog();
@@ -126,8 +234,10 @@ const BlogPage = () => {
                 variant={"ghost"}
                 className="mx-3 cursor-pointer"
                 size={"lg"}
+                onClick={saveBlog}
+                disabled={loading}
               >
-                <Bookmark />
+                {saved ? <BookmarkCheck /> : <Bookmark />}
               </Button>
             )}
             {blog.author === user?._id && (
@@ -144,6 +254,8 @@ const BlogPage = () => {
                   size={"sm"}
                   variant={"destructive"}
                   className="cursor-pointer mx-2"
+                  onClick={() => deleteBlog()}
+                  disabled={loading}
                 >
                   <Trash2Icon />
                 </Button>
@@ -195,9 +307,9 @@ const BlogPage = () => {
             comments.map((element, index) => (
               <div
                 key={index}
-                className="border-b py-2 flex items-center gap-3"
+                className="border-b py-5 flex items-center gap-3"
               >
-                <div>
+                <div className="flex flex-col gap-3">
                   <p className="font-semibold flex items-center gap-1">
                     <span className="user border border-gray-400 rounded-full p-1">
                       <User2 />
@@ -211,6 +323,16 @@ const BlogPage = () => {
                     {new Date(element.create_at).toLocaleString()}
                   </p>
                 </div>
+                {element.userid === user?._id && (
+                  <Button
+                    onClick={() => deleteComment(element.id)}
+                    variant={"destructive"}
+                    className="cursor-pointer"
+                    disabled={loading}
+                  >
+                    <Trash2 />
+                  </Button>
+                )}
               </div>
             ))
           ) : (
