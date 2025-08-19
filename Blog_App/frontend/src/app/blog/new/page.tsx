@@ -19,19 +19,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { author_service, useAppData } from "@/context/AppContext";
+import {
+  blogCategories,
+  author_service,
+  useAppData,
+} from "@/context/AppContext";
 
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
-
-export const blogCategories = [
-  "Tecnology",
-  "Health",
-  "Finance",
-  "Travel",
-  "Education",
-  "Entertaiment",
-  "Study",
-];
 
 const AddBlog = () => {
   const { fetchBlogs } = useAppData();

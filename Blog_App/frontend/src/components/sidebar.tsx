@@ -15,9 +15,7 @@ import {
 } from "./ui/sidebar";
 import { Input } from "./ui/input";
 
-import { blogCategories } from "@/app/blog/new/page";
-
-import { useAppData } from "@/context/AppContext";
+import { blogCategories, useAppData } from "@/context/AppContext";
 
 const SideBar = () => {
   const { searchQuery, setSearchQuery, setCategory } = useAppData();

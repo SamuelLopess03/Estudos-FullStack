@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -21,13 +21,13 @@ import {
 } from "@/components/ui/select";
 
 import {
+  blogCategories,
   author_service,
   Blog,
   blog_service,
   useAppData,
   User,
 } from "@/context/AppContext";
-import { blogCategories } from "../../new/page";
 
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
@@ -37,8 +37,6 @@ const EditBlogPage = () => {
   const editor = useRef(null);
 
   const { id } = useParams();
-
-  const router = useRouter();
 
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
