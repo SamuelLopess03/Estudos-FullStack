@@ -12,9 +12,19 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-export const user_service = "http://localhost:5000";
-export const author_service = "http://localhost:5001";
-export const blog_service = "http://localhost:5002";
+export const user_service = "https://user-service-l8mf.onrender.com";
+export const author_service = "https://author-service-szdc.onrender.com";
+export const blog_service = "https://blog-service-eg2x.onrender.com";
+
+export const blogCategories = [
+  "Tecnology",
+  "Health",
+  "Finance",
+  "Travel",
+  "Education",
+  "Entertaiment",
+  "Study",
+];
 
 export interface User {
   _id: string;
