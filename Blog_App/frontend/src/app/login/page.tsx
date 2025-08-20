@@ -34,7 +34,7 @@ const LoginPage = () => {
         user: User;
       }>(`${user_service}/api/v1/login`, {
         code: authResult["code"],
-        redirect_uri: "http://localhost:3000",
+        redirect_uri: "https://blog-app-gamma-nine-96.vercel.app",
       });
 
       Cookies.set("token", result.data.token, {
