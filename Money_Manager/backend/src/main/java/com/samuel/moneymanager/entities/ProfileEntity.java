@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Profile {
+public class ProfileEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
