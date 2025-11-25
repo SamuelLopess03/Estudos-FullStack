@@ -1,0 +1,31 @@
+{
+  "name": "advanced-task-manager-backend",
+  "version": "1.0.0",
+  "description": "Backend de um Gerenciador de Tarefas Avançado desenvolvido com Node.js, Fastify e TypeScript.",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": [
+    "nodejs",
+    "fastify",
+    "typescript",
+    "backend",
+    "task-manager",
+    "todo",
+    "api"
+  ],
+  "author": "Samuel Lopes",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "fastify": "^5.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
